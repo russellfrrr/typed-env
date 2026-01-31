@@ -1,3 +1,5 @@
+// design sketch only, will modularize soon
+
 export type Parser<T> = {
   parse(value: string | undefined): T;
   optional(): Parser<T | undefined>;
@@ -62,6 +64,37 @@ export const number = (): Parser<number> => {
           }
 
           return parsed;
+        },
+        optional: this.optional,
+      }
+    }
+  }
+}
+
+export const boolean = (): Parser<boolean> => {
+  return {
+    parse(value) {
+      if (value === undefined) {
+        throw new Error('Missing env var');
+      }
+
+      if (value === 'true') return true;
+      if (value === 'false') return false;
+
+      throw new Error('Invalid boolean');
+    },
+
+    optional() {
+      return {
+        parse(value) {
+          if (value === undefined) {
+            return undefined;
+          }
+
+          if (value === 'true') return true;
+          if (value === 'false') return false;
+
+          throw new Error('Invalid boolean');
         },
         optional: this.optional,
       }
