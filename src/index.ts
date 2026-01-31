@@ -1,5 +1,6 @@
 export type Parser<T> = {
   parse(value: string | undefined): T;
+  optional(): Parser<T | undefined>;
 }
 
 type Schema = Record<string, Parser<any>>;
@@ -17,6 +18,18 @@ export const string = (): Parser<string> => {
 
       return value;
     },
+
+    optional() {
+      return {
+        parse(value) {
+          if (value === undefined) {
+            return undefined;
+          }
+          return value;
+        },
+        optional: this.optional,
+      }
+    }
   }
 }
 
@@ -34,6 +47,24 @@ export const number = (): Parser<number> => {
       }
 
       return parsed;
+    },
+
+    optional() {
+      return {
+        parse(value) {
+          if (value === undefined) {
+            return undefined;
+          }
+
+          const parsed = Number(value);
+          if(Number.isNaN(parsed)) {
+            throw new Error('Invalid number');
+          }
+
+          return parsed;
+        },
+        optional: this.optional,
+      }
     }
   }
 }
