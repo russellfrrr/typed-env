@@ -1,6 +1,10 @@
-export const string = () => {
+export type Parser<T> = {
+  parse(value: string | undefined): T;
+}
+
+export const string = (): Parser<string> => {
   return {
-    parse(value: string | undefined): string {
+    parse(value: string | undefined) {
       if (value === undefined) {
         throw new Error('Missing env var');
       }
@@ -10,9 +14,9 @@ export const string = () => {
   }
 }
 
-export const number = () => {
+export const number = (): Parser<number> => {
   return {
-    parse(value: string | undefined): number {
+    parse(value: string | undefined) {
       if (value === undefined) {
         throw new Error('Missing env var');
       }
