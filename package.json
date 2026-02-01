@@ -1,5 +1,5 @@
 {
-  "name": "typed-env",
+  "name": "@russellfrrr/typed-env",
   "version": "0.1.0",
   "description": "Type-safe environment variables with runtime validation",
   "main": "dist/index.js",
