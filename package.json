@@ -9,6 +9,14 @@
   "scripts": {
     "build": "tsc"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/russellfrrr/typed-env.git"
+  },
+  "homepage": "https://github.com/russellfrrr/typed-env",
+  "bugs": {
+    "url": "https://github.com/russellfrrr/typed-env/issues"
+  },
   "keywords": [
     "env",
     "environment",
