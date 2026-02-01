@@ -1,8 +1,10 @@
 // design sketch only, will modularize soon
+// might need to make helpers on modifiers
 
 export type Parser<T> = {
   parse(value: string | undefined): T;
   optional(): Parser<T | undefined>;
+  default(value: T): Parser<T>;
 }
 
 type Schema = Record<string, Parser<any>>;
@@ -30,6 +32,20 @@ export const string = (): Parser<string> => {
           return value;
         },
         optional: this.optional,
+        default: this.default,
+      }
+    },
+
+    default(defaultValue: string) {
+      return {
+        parse(value) {
+          if (value === undefined) {
+            return defaultValue;
+          }
+          return value;
+        },
+        optional: this.optional,
+        default: this.default,
       }
     }
   }
@@ -66,6 +82,26 @@ export const number = (): Parser<number> => {
           return parsed;
         },
         optional: this.optional,
+        default: this.default,
+      }
+    },
+
+    default(defaultValue: number) {
+      return {
+        parse(value) {
+          if (value === undefined) {
+            return defaultValue;
+          }
+
+          const parsed = Number(value);
+          if (Number.isNaN(parsed)) {
+            throw new Error('Invalid number');
+          }
+
+          return parsed;
+        },
+        optional: this.optional,
+        default: this.default,
       }
     }
   }
@@ -97,6 +133,24 @@ export const boolean = (): Parser<boolean> => {
           throw new Error('Invalid boolean');
         },
         optional: this.optional,
+        default: this.default,
+      }
+    },
+
+    default(defaultValue: boolean) {
+      return {
+        parse(value) {
+          if (value === undefined) {
+            return defaultValue;
+          }
+          
+          if (value === 'true') return true;
+          if (value === 'false') return false;
+
+          throw new Error('Invalid boolean');
+        },
+        optional: this.optional,
+        default: this.default,
       }
     }
   }
