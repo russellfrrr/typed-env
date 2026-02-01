@@ -2,9 +2,9 @@ import { Parser } from './parser';
 
 export const string = (): Parser<string> => {
   return {
-    parse(value: string | undefined) {
+    parse(value, key) {
       if (value === undefined) {
-        throw new Error('Missing env var');
+        throw new Error(`Missing environment variable: ${key}`);
       }
 
       return value;
@@ -12,7 +12,7 @@ export const string = (): Parser<string> => {
 
     optional() {
       return {
-        parse(value) {
+        parse(value, key) {
           if (value === undefined) {
             return undefined;
           }
@@ -25,7 +25,7 @@ export const string = (): Parser<string> => {
 
     default(defaultValue: string) {
       return {
-        parse(value) {
+        parse(value, key) {
           if (value === undefined) {
             return defaultValue;
           }

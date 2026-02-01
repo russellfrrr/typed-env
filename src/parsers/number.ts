@@ -2,15 +2,15 @@ import { Parser } from './parser';
 
 export const number = (): Parser<number> => {
   return {
-    parse(value: string | undefined) {
+    parse(value, key) {
       if (value === undefined) {
-        throw new Error('Missing env var');
+        throw new Error(`Missing environment variable: ${key}`);
       }
 
       const parsed = Number(value);
 
       if (Number.isNaN(parsed)) {
-        throw new Error('Invalid number');
+        throw new Error(`Invalid number for ${key}`);
       }
 
       return parsed;
@@ -18,14 +18,14 @@ export const number = (): Parser<number> => {
 
     optional() {
       return {
-        parse(value) {
+        parse(value, key) {
           if (value === undefined) {
             return undefined;
           }
 
           const parsed = Number(value);
           if(Number.isNaN(parsed)) {
-            throw new Error('Invalid number');
+            throw new Error(`Invalid number for ${key}`);
           }
 
           return parsed;
@@ -37,14 +37,14 @@ export const number = (): Parser<number> => {
 
     default(defaultValue: number) {
       return {
-        parse(value) {
+        parse(value, key) {
           if (value === undefined) {
             return defaultValue;
           }
 
           const parsed = Number(value);
           if (Number.isNaN(parsed)) {
-            throw new Error('Invalid number');
+            throw new Error(`Invalid number for ${key}`);
           }
 
           return parsed;

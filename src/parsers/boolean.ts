@@ -2,20 +2,20 @@ import { Parser } from './parser';
 
 export const boolean = (): Parser<boolean> => {
   return {
-    parse(value) {
+    parse(value, key) {
       if (value === undefined) {
-        throw new Error('Missing env var');
+        throw new Error(`Missing environment variable: ${key}`);
       }
 
       if (value === 'true') return true;
       if (value === 'false') return false;
 
-      throw new Error('Invalid boolean');
+      throw new Error(`Invalid boolean for ${key}`);
     },
 
     optional() {
       return {
-        parse(value) {
+        parse(value, key) {
           if (value === undefined) {
             return undefined;
           }
@@ -23,7 +23,7 @@ export const boolean = (): Parser<boolean> => {
           if (value === 'true') return true;
           if (value === 'false') return false;
 
-          throw new Error('Invalid boolean');
+          throw new Error(`Invalid boolean for ${key}`);
         },
         optional: this.optional,
         default: this.default,
@@ -32,7 +32,7 @@ export const boolean = (): Parser<boolean> => {
 
     default(defaultValue: boolean) {
       return {
-        parse(value) {
+        parse(value, key) {
           if (value === undefined) {
             return defaultValue;
           }
@@ -40,7 +40,7 @@ export const boolean = (): Parser<boolean> => {
           if (value === 'true') return true;
           if (value === 'false') return false;
 
-          throw new Error('Invalid boolean');
+          throw new Error(`Invalid boolean for ${key}`);
         },
         optional: this.optional,
         default: this.default,

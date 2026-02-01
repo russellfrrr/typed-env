@@ -7,7 +7,7 @@ export function createEnv<T extends Schema>(schema: T): InferEnv<T> {
     const parser = schema[key];
     const rawValue = process.env[key];
 
-    result[key] = parser.parse(rawValue);
+    result[key] = parser.parse(rawValue, key);
   }
 
   return result;
