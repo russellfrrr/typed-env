@@ -1,5 +1,8 @@
 # typed-env
 
+[![npm version](https://img.shields.io/npm/v/@russellfrrr/typed-env)](https://www.npmjs.com/package/@russellfrrr/typed-env)
+[![license](https://img.shields.io/npm/l/@russellfrrr/typed-env)](LICENSE)
+
 A small TypeScript utility for **type-safe environment variables** with
 runtime validation and clear error messages.
 
