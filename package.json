@@ -8,8 +8,16 @@
   "files": [
     "dist"
   ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "test": "vitest",
+    "test:run": "vitest run"
   },
   "repository": {
     "type": "git",
@@ -24,7 +32,9 @@
     "environment",
     "typescript",
     "validation",
-    "config"
+    "config",
+    "schema",
+    "typed"
   ],
   "author": "",
   "license": "ISC",
