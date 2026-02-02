@@ -27,6 +27,12 @@ early and types are inferred automatically.
 - `optional()` and `default()` helpers
 - Simple schema-based API
 
+## Non-Goals
+
+- This is not a full schema validation library
+- This does not replace tools like Zod for general data validation
+- This library focuses only on `process.env`
+
 ## Install
 
 ```bash
@@ -66,6 +72,21 @@ const env = createEnv({
 ### `boolean()`
 - Accepts only `"true"` and `"false"`
 
+### `enum_(values)`
+
+Restricts an environment variable to a fixed set of allowed string values.
+
+```ts
+import { createEnv, enum_ } from 'typed-env';
+
+const env = createEnv({
+  NODE_ENV: enum_(['dev', 'prod', 'test']),
+});
+
+// type of env.NODE_ENV:
+// 'dev' | 'prod' | 'test'
+```
+
 ## Optional and Default
 
 ```ts
@@ -82,6 +103,15 @@ When a required variable is missing or invalid, `createEnv` throws an `Error` wi
 - `Missing environment variable: PORT`
 - `Invalid number for PORT`
 - `Invalid boolean for DEBUG`
+
+## Testing
+
+This project includes automated tests using Vitest to verify
+runtime behavior of all parsers.
+
+```bash
+npm test
+```
 
 ## API
 
