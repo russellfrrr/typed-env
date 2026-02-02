@@ -1,6 +1,6 @@
 import { Parser } from './parser';
 
-export const enum_ = <T extends readonly string[]>(values: T): Parser<T[number]> => {
+export const enum_ = <const T extends readonly string[]>(values: T): Parser<T[number]> => {
   const allowed = new Set(values);
 
   return {
