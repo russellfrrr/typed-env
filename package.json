@@ -1,10 +1,11 @@
 {
   "name": "@russellfrrr/typed-env",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "Type-safe environment variables with runtime validation",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "type": "module",
+  "sideEffects": false,
   "files": [
     "dist"
   ],
@@ -16,6 +17,9 @@
   },
   "scripts": {
     "build": "tsc",
+    "clean": "node -e \"require('node:fs').rmSync('dist', { recursive: true, force: true })\"",
+    "check": "npm run build && npm run test:run",
+    "prepack": "npm run clean && npm run build",
     "test": "vitest",
     "test:run": "vitest run"
   },
@@ -36,7 +40,7 @@
     "schema",
     "typed"
   ],
-  "author": "",
+  "author": "russellfrrr",
   "license": "ISC",
   "devDependencies": {
     "@types/node": "^25.1.0",
