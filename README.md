@@ -3,91 +3,95 @@
 [![npm version](https://img.shields.io/npm/v/@russellfrrr/typed-env)](https://www.npmjs.com/package/@russellfrrr/typed-env)
 [![license](https://img.shields.io/npm/l/@russellfrrr/typed-env)](LICENSE)
 
-A small TypeScript utility for **type-safe environment variables** with
-runtime validation and clear error messages.
+A tiny TypeScript utility for turning environment variables into a typed,
+validated config object.
 
-Inspired by schema validators like Zod, but **focused only on env vars**.
+`typed-env` is inspired by schema validators like Zod, but it stays focused on
+one job: parsing `process.env` early, clearly, and with useful inferred types.
 
-## Why?
+## Why
 
-In most Node / MERN apps, environment variables are:
-- untyped
-- parsed manually
-- validated too late (or not at all)
+Environment variables often start as strings, get parsed by hand, and fail only
+after the app has already started doing real work.
 
-**typed-env** lets you define a schema for `process.env` so errors happen
-early and types are inferred automatically.
+`typed-env` lets you define the shape of your runtime config once:
 
----
-
-## Features
-
-- Strongly-typed `process.env` parsing
-- Built-in `string`, `number`, and `boolean` parsers
-- `optional()` and `default()` helpers
-- Simple schema-based API
-
-## Non-Goals
-
-- This is not a full schema validation library
-- This does not replace tools like Zod for general data validation
-- This library focuses only on `process.env`
+- missing values fail fast
+- invalid values produce clear errors
+- parsed values are inferred by TypeScript
+- defaults and optional values stay close to the variable definition
 
 ## Install
 
 ```bash
-npm install typed-env
+npm install @russellfrrr/typed-env
 ```
 
 ## Usage
 
 ```ts
-import { createEnv, string, number, boolean } from 'typed-env';
+import { boolean, createEnv, enum_, number, string } from '@russellfrrr/typed-env';
 
 const env = createEnv({
-  NODE_ENV: string(),
+  NODE_ENV: enum_(['dev', 'prod', 'test']).default('dev'),
   PORT: number().default(3000),
   DEBUG: boolean().optional(),
   DATABASE_URL: string(),
 });
 
-// env is fully typed:
+// env is inferred as:
 // {
-//   NODE_ENV: string;
+//   NODE_ENV: 'dev' | 'prod' | 'test';
 //   PORT: number;
 //   DEBUG: boolean | undefined;
 //   DATABASE_URL: string;
 // }
 ```
 
+By default, `createEnv` reads from `process.env`. You can also pass an env-like
+source, which is useful for tests or framework-specific config loading:
+
+```ts
+const env = createEnv(
+  {
+    PORT: number(),
+    DEBUG: boolean().default(false),
+  },
+  {
+    PORT: '4000',
+  }
+);
+```
+
 ## Parsers
 
 ### `string()`
-- Required by default
-- Use `.optional()` or `.default(value)` to adjust behavior
+
+Requires a present string value. Empty strings are preserved.
 
 ### `number()`
-- Parses with `Number()` and throws on `NaN`
+
+Parses with `Number()` and throws when the result is `NaN`.
 
 ### `boolean()`
-- Accepts only `"true"` and `"false"`
+
+Accepts only `"true"` and `"false"`.
 
 ### `enum_(values)`
 
-Restricts an environment variable to a fixed set of allowed string values.
+Restricts a value to a fixed list of strings and infers the literal union.
 
 ```ts
-import { createEnv, enum_ } from 'typed-env';
-
 const env = createEnv({
   NODE_ENV: enum_(['dev', 'prod', 'test']),
 });
 
-// type of env.NODE_ENV:
-// 'dev' | 'prod' | 'test'
+// env.NODE_ENV is 'dev' | 'prod' | 'test'
 ```
 
-## Optional and Default
+## Modifiers
+
+Every parser supports `optional()` and `default(value)`.
 
 ```ts
 const env = createEnv({
@@ -96,33 +100,29 @@ const env = createEnv({
 });
 ```
 
+Present values are still validated when a parser is optional or defaulted.
+
 ## Errors
 
-When a required variable is missing or invalid, `createEnv` throws an `Error` with a helpful message like:
+`createEnv` throws regular `Error` instances with messages like:
 
 - `Missing environment variable: PORT`
 - `Invalid number for PORT`
 - `Invalid boolean for DEBUG`
+- `Invalid value for NODE_ENV. Expected one of: dev, prod, test`
 
-## Testing
+## Non-goals
 
-This project includes automated tests using Vitest to verify
-runtime behavior of all parsers.
+- This is not a full schema validation library.
+- This does not replace Zod, Valibot, or similar tools for general validation.
+- This library intentionally focuses on environment variables.
+
+## Development
 
 ```bash
 npm test
+npm run build
 ```
-
-## API
-
-### `createEnv(schema)`
-Parses `process.env` using the provided schema and returns a typed object.
-
-### `Parser<T>`
-Each parser implements:
-- `parse(value: string | undefined, key: string): T`
-- `optional(): Parser<T | undefined>`
-- `default(value: T): Parser<T>`
 
 ## License
 
